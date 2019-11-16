@@ -1,0 +1,15 @@
+.mapbox-container{
+
+  height:100vh;
+  width:100%;
+  overflow:hidden;
+  box-sizing:border-box;
+  .mapbox {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+  }
+
+}
