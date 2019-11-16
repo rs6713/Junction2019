@@ -1,0 +1,20 @@
+.add-event{
+  text-align:left;
+  width:50%;
+  left:0;
+  form{
+    width:100%;
+  }
+  form >div{
+    width:100%;
+    padding: 0.5em 1em;
+    >div{
+      width:100%;
+    }
+  }
+  button{
+    padding:1em;
+    margin-left:1em;
+    float:right;
+  }
+}

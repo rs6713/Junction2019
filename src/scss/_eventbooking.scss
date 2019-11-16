@@ -1,7 +1,69 @@
-.eventbooking-container {
 
+.events{
+position:relative;
+.studentevents{
+  position:absolute;
+  top:0;
+  left:0;
+  width:60%;
+  text-align:left;
+  
+
+  > div{
+    width:100%;
+    margin-bottom:0.5em;
+    padding-left:0.5em;
+    padding-right:0.5em;
+    padding-bottom:0.5em;
+    margin-top:0.5em;
+    box-sizing:border-box;
+    border-radius:0.25em;
+    margin-left:0.5em;
+    margin-right:0.5em;
+    background-color:ghostwhite;
+
+
+    h3{
+      font-weight:normal;
+      span{
+        color:cornflowerblue;
+      }
+    }
+
+    > div{
+      display:flex;
+      flex-direction:row;
+      max-width:100%;
+      overflow:hidden;
+
+      >div:first-child{
+        
+        max-width:60%;
+        height:auto;
+        flex-grow:1;
+        box-sizing:border-box;
+        padding-right:0.5em;
+        img{
+          width:100%;
+
+        }
+        
+      }
+      >div:last-child{
+        min-width:40%;
+      }
+    }
+  }
+  
+}
+
+.eventbooking-container {
+  background-color:ghostwhite;
+  position:absolute;
+  top:0;
+  left:60%;
   height:100%;
-  width:100%;
+  width:40%;
 
   h2{
     text-align:left;
@@ -37,4 +99,5 @@
     }
 
   }
+}
 }

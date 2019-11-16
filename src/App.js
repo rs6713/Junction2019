@@ -7,6 +7,7 @@ import Environment from './containers/Environment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMapMarkedAlt, faCalendarAlt, faLeaf } from '@fortawesome/free-solid-svg-icons'
 import Menu from './containers/Menu';
+import AddEvent from './containers/AddEvent';
 
 import Travel from './containers/Travel';
 
@@ -39,6 +40,7 @@ class App extends Component {
                 <Route path="/mapbox" component={MapBox} />
                 <Route path="/eventbooking" component={EventBooking} />
                 <Route path="/environment" component={Environment} />
+                <Route path="/addEvent" component={AddEvent} />
               </Switch>
             
           </div>

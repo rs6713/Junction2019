@@ -65,6 +65,24 @@ class MapBox extends Component {
     }
   }
 
+  // Make data call
+  componentWillMount(){
+    /*
+    fetch('/traffic:8000').then(function(res){
+      console.log("Response:", res.body)
+      if(res.status === 200){
+        const reader = response.body.getReader();
+
+      }
+    
+    }.bind(this)).catch(err=>{
+      console.log("Error while fetching traffic")
+      
+    })
+    */
+
+  }
+
   componentDidMount(){
     var self=this;
 
