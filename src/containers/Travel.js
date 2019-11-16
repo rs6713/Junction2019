@@ -34,13 +34,13 @@ class Travel extends Component {
 
   render(){
     return(
-      <div class ="travel-container">
-        <div class="bike">
+      <div className ="travel-container">
+        <div className="bike">
           <span><FontAwesomeIcon icon={faBiking}/></span> 
           <span><h3>{this.state.bike.occupancy} / {this.state.bike.total}</h3></span>
         </div>
         {this.state.train.map(t=>
-          <div class="train">
+          <div className="train">
             <span><FontAwesomeIcon icon={faTrain}/></span> 
             <span>
               <h3>

@@ -46,26 +46,34 @@ class EventBooking extends Component {
 
   addEvent(){
     // call to backend
-    /*
-    fetch('/addEvent',
+    let data = {
+      title: this.state.title,
+      description: this.state.description,
+      location: this.state.location,
+      date: this.state.time,
+      members: "owner",
+      required: this.state.total
+    }
+    
+    fetch(global.backendURL+'events',
       {  method: "POST",
         headers: {"Content-Type": "application/json; charset=utf-8"},
         body: data})
       .then(res => {
         if(res.status === 200){
-            console.log("Successful in adding article:", res)
-            resolve('success')
+            console.log("Successful in adding event:", res)
+            //resolve('success')
         }else{
-          console.log("Unsuccessful in adding article:", res.message)
-          this.setState({errors: {...this.state.errors, submission: ["Unsuccessful in adding new article."]}})
-          reject(res.message)
+          console.log("Unsuccessful in adding event:", res.message)
+          //this.setState({errors: {...this.state.errors, submission: ["Unsuccessful in adding new article."]}})
+          //reject(res.message)
       }
     }).catch(err=>{
-      console.log("Unsuccessful in adding article:", err)
-      this.setState({errors: {...this.state.errors, submission: ["Unsuccessful in adding new article."]}})
-      reject(err)
+      console.log("Unsuccessful in adding event:", err)
+      //this.setState({errors: {...this.state.errors, submission: ["Unsuccessful in adding new article."]}})
+      //reject(err)
     })
-    */
+    
   }
 
   handleChange = date => {
@@ -134,7 +142,7 @@ class EventBooking extends Component {
                 label="Location"
                 margin="normal"
                 variant="outlined"
-                onChange={this.handleInputChange("address")}
+                onChange={this.handleInputChange("location")}
                 multiline
                 rows="2"
                 defaultValue="Street number, name, postcode"

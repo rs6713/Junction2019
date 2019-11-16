@@ -57,50 +57,128 @@ class EventBooking extends Component {
   // total, number, description, title, location, id, 
   getEvents(){
     let self=this;
-    this.setState({
-      events: [{
-        "description:": "Get together to play football",
-        "time": (new Date()),
-        "location": "Aalto Skate skeittiramppi",
-        "title": "Football in the Park",
-        "id": 0,
-        "total":9,
-        "members":["Jack Simpson", "James Jimpson", "Henz Jager", "Leo Sebastian"]
-      },
-      {
-        "description:": "Yoga Tuesday",
-        "time": (new Date()),
-        "location": "Alvarinaukio",
-        "title": "Yoga in the Park",
-        "id": 1,
-        "total":null,
-        "members":["Jack Simpson", "James Jimpson", "Henz Jager", "Leo Sebastian"]
+    console.log("Fetching events")
+
+    fetch(global.backendURL+"events/", {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(res => {
+      console.log("What was returned: ", res)
+      return res.json()
+    
+    })
+      .then(data =>{
+        if(data){
+          console.log("List of events: ", data)
+          self.setState({events: data.map(d=>(
+            {
+              description: d.description,
+              title: d.title,
+              members: d.members.split(','),
+              location: d.location,
+              id: d.id,
+              total: d.required,
+              time: d.date
+            }
+          ))});
+        }else{
+          console.log("No data, filling dummy")
+
+          self.setState({
+            events: [{
+              "description:": "Get together to play football",
+              "time": (new Date()),
+              "location": "Aalto Skate skeittiramppi",
+              "title": "Football in the Park",
+              "id": 0,
+              "total":9,
+              "members":["Jack Simpson", "James Jimpson", "Henz Jager", "Leo Sebastian"]
+            },
+            {
+              "description:": "Yoga Tuesday",
+              "time": (new Date()),
+              "location": "Alvarinaukio",
+              "title": "Yoga in the Park",
+              "id": 1,
+              "total":null,
+              "members":["Jack Simpson", "James Jimpson", "Henz Jager", "Leo Sebastian"]
+              }
+            ]
+          });
         }
-      ]
-    }, function() {
-      async function run(i) {
-        console.log(i)
-        const res = await qrcode.toDataURL('localhost:3000/joinevent/'+self.state.events[i].id);
+        // Now can generate qrs.
+        // Either filled with dummy or fetched from database
+
+        async function run(i) {
+          console.log(i)
+          const res = await qrcode.toDataURL('localhost:3000/signup/'+self.state.events[i].id);
+          self.setState({
+            events: [...self.state.events.slice(0,i),
+              {...self.state.events[i], qr:res}
+            
+            ,...self.state.events.slice(i+1)]
+            
+          }, function(){
+            self.forceUpdate()
+            console.log(self.state.events)
+          })
+          console.log('Wrote to ./qr.html', res);
+        }
+
+        for(let i=0; i<self.state.events.length;i++){
+          run(i).catch(error => console.error(error.stack));
+        }
+
+      }).catch(err=>{
+        console.log("Error when fetching events: ",err)
+        console.log("Filling dummy")
         self.setState({
-          events: [...self.state.events.slice(0,i),
-            {...self.state.events[i], qr:res}
-          
-          ,...self.state.events.slice(i+1)]
-          
-        }, function(){
-          self.forceUpdate()
-          console.log(self.state.events)
-        })
-        console.log('Wrote to ./qr.html', res);
-      }
+          events: [{
+            "description:": "Get together to play football",
+            "time": (new Date()),
+            "location": "Aalto Skate skeittiramppi",
+            "title": "Football in the Park",
+            "id": 0,
+            "total":9,
+            "members":["Jack Simpson", "James Jimpson", "Henz Jager", "Leo Sebastian"]
+          },
+          {
+            "description:": "Yoga Tuesday",
+            "time": (new Date()),
+            "location": "Alvarinaukio",
+            "title": "Yoga in the Park",
+            "id": 1,
+            "total":null,
+            "members":["Jack Simpson", "James Jimpson", "Henz Jager", "Leo Sebastian"]
+            }
+          ]
+        });
+        async function run(i) {
+          console.log(i)
+          const res = await qrcode.toDataURL('localhost:3000/signup/'+self.state.events[i].id);
+          self.setState({
+            events: [...self.state.events.slice(0,i),
+              {...self.state.events[i], qr:res}
+            
+            ,...self.state.events.slice(i+1)]
+            
+          }, function(){
+            self.forceUpdate()
+            console.log(self.state.events)
+          })
+          console.log('Wrote to ./qr.html', res);
+        }
 
-      for(let i=0; i<self.state.events.length;i++){
-        run(i).catch(error => console.error(error.stack));
-      }
+        for(let i=0; i<self.state.events.length;i++){
+          run(i).catch(error => console.error(error.stack));
+        }
 
-    }.bind(this))
 
-  }
+      })
+    }
+
 
   render(){
     console.log("Rendering")

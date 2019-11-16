@@ -17,12 +17,11 @@ class Menu extends Component {
   }
 
   render(){
-    console.log(window.location.pathname);
+
     //this.props.location.search;
     var self=this;
     function styleLink(url){
-      console.log(self.props)
-      return  self.props.history.location.pathname == url? {"background-color":"white", "color":"#222222"} : {}
+      return  self.props.history.location.pathname == url? {"backgroundColor":"white", "color":"#222222"} : {}
     }
     return(
       <div id = "menu">
