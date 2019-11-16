@@ -12,11 +12,45 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiYnM2NzEzIiwiYSI6ImNrMzFhYjBocjA2ajQzZXA5b3JoO
 
 const accommodations = [
   {
-    'name': 'Jämeräntaival 6',
-    'lat': 60.188663, 
-    'lng': 24.837004
+    'name': 'Residential Accommodation',
+    'lat': 60.190044, 
+    'lng': 24.836351,
+    'icon': "college"
+  },
+  {
+    'name': 'Aalto University',
+    'lat': 60.186099, 
+    'lng': 24.825976,
+    'icon': "college"
+  },
+  {'info': 'Jämeräntaival 6',
+  'lat': 60.188663, 'lng': 24.837004,
+  },
+  {'info': 'Otaranta 8',
+  'lat': 60.186698, 'lng': 24.83587
   }
 ]
+/*
+var events={
+  'lat':,'lng':, 
+}*/
+
+const accomPlaces =  {
+  "type": "FeatureCollection",
+  "features": accommodations.map(accom=>({
+    "type": "Feature",
+    "properties": {
+    "place": accom.name || "",
+    "info": accom.info || "",
+    "icon": accom.icon
+    },
+    "geometry": {
+    "type": "Point",
+    "coordinates": [accom.lng, accom.lat]
+    }
+  }))};
+  console.log(accomPlaces)
+ 
 
 class MapBox extends Component {
   constructor(props){
@@ -25,7 +59,7 @@ class MapBox extends Component {
       currentAccommodation:0,
       lng: accommodations[0].lng,
       lat: accommodations[0].lat,
-      zoom:18,
+      zoom:15,
       pitch: 60,
       antialias: true
     }
@@ -50,10 +84,12 @@ class MapBox extends Component {
     
     const map = new mapboxgl.Map({
       container: this.mapContainer, // id
-      style: 'mapbox://styles/mapbox/streets-v11',
+      style: 'mapbox://styles/mapbox/light-v10',
       center: [this.state.lng, this.state.lat],
       zoom: this.state.zoom
     });
+
+    /*
 
     // parameters to ensure the model is georeferenced correctly on the map
     var modelOrigin = [this.state.lng, this.state.lat];
@@ -70,9 +106,8 @@ class MapBox extends Component {
       rotateX: modelRotate[0],
       rotateY: modelRotate[1],
       rotateZ: modelRotate[2],
-      /* Since our 3D model is in real world meters, a scale transform needs to be
-      * applied since the CustomLayerInterface expects units in MercatorCoordinates.
-      */
+      //Since our 3D model is in real world meters, a scale transform needs to be applied since the CustomLayerInterface expects units in MercatorCoordinates.
+    
       scale: modelAsMercatorCoordinate.meterInMercatorCoordinateUnits()
     };
 
@@ -132,6 +167,41 @@ class MapBox extends Component {
     map.on('style.load', function() {
       map.addLayer(customLayer, 'waterway-label');
     }); 
+    */
+
+    
+
+
+    map.on('load', function() {
+      // Add a GeoJSON source containing place coordinates and information.
+      map.addSource("places", {
+      "type": "geojson",
+      "data": accomPlaces
+      });
+       
+      map.addLayer({
+        "id": "poi-labels",
+        "type": "symbol",
+        "source": "places",
+        "layout": {
+         // "text-field": ["get", "description"],
+          //"text-variable-anchor": ["top", "bottom", "left", "right"],
+          //"text-radial-offset": 0.5,
+          //"text-justify": "auto",
+          "icon-image": ["concat", ["get", "icon"], "-15"],
+          "text-field": ['format',
+            ['upcase', ['get', 'place']], { 'font-scale': .8, "text-color": 'black' },
+            //'\n', {},
+            ['downcase', ['get', 'info']], { 'font-scale': .6, "text-color": 'blue' }],
+            "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+            "text-offset": [0, 0.6],
+            "text-anchor": "top",
+            
+        }
+      });
+       
+
+    });
   }
 
   render(){
