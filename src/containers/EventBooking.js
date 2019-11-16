@@ -80,7 +80,7 @@ class EventBooking extends Component {
               location: d.location,
               id: d.id,
               total: d.required,
-              time: d.date
+              time: new Date(d.creationDate)
             }
           ))});
         }else{
@@ -113,7 +113,7 @@ class EventBooking extends Component {
 
         async function run(i) {
           console.log(i)
-          const res = await qrcode.toDataURL('localhost:3000/signup/'+self.state.events[i].id);
+          const res = await qrcode.toDataURL(global.frontendURL + 'signup/'+self.state.events[i].id);
           self.setState({
             events: [...self.state.events.slice(0,i),
               {...self.state.events[i], qr:res}
@@ -157,7 +157,7 @@ class EventBooking extends Component {
         });
         async function run(i) {
           console.log(i)
-          const res = await qrcode.toDataURL('localhost:3000/signup/'+self.state.events[i].id);
+          const res = await qrcode.toDataURL(global.frontendURL +'signup/'+self.state.events[i].id);
           self.setState({
             events: [...self.state.events.slice(0,i),
               {...self.state.events[i], qr:res}

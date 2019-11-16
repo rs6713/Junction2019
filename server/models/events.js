@@ -2,30 +2,31 @@ const { pool } = require("../config/config");
 
 const createEvent = (request, response) => {
   const { title, description, location, date, required, members } = request.body;
-
+  console.log("Asked to create event:", request.body)
   pool.query(
-    'INSERT INTO public."Events" ("title", "description", "location", "date", "required", "members") VALUES ($1, $2, $3, $4, $5, $6)',
+    'INSERT INTO public."events" ("title", "description", "location", "creationDate", "required", "members") VALUES ($1, $2, $3, $4, $5, $6)',
     [title, description, location, date, required, members],
     (error, result) => {
       if (error) {
-        console.log(error)
+        console.log("Errored", error)
         throw error;
       }
+      console.log("Successful insert", result)
       response.status(201).json(result.rows);
     }
   );
 };
 
 const getEvents = (request, response) => {
-  console.log("Asked to get events")
+  console.log("Asked to get events\n")
   pool.query(
-    'SELECT * FROM public."Events" ORDER BY date ASC',
+    'SELECT * FROM public."events"',
     (error, results) => {
       if (error) {
-        console.log(error)
+        console.log("Errored: ", error)
         throw error;
       }
-      console.log("Fetched the following events: ",results, results.rows)
+      console.log("Fetched the following events: ",results)
       response.status(200).json(results.rows);
     }
   );
@@ -33,9 +34,9 @@ const getEvents = (request, response) => {
 
 const getEventById = (request, response) => {
   const id = parseInt(request.params.id, 10);
-
+  console.log("Fetching event id: ", id)
   pool.query(
-    'SELECT * FROM public."Events" WHERE "ID" = $1',
+    'SELECT * FROM public."events" WHERE "id" = $1',
     [id],
     (error, results) => {
       if (error) {
@@ -50,8 +51,9 @@ const getEventById = (request, response) => {
 const addToEvent = (request, response) => {
   const { members} = request.body;
   const id = parseInt(request.params.id, 10);
+  console.log("Adding to event: ", id, members)
   pool.query(
-    'UPDATE public."Events" SET "members" = $1 WHERE 2id" = $5 ',
+    'UPDATE public."events" SET "members" = $1 WHERE "id" = $2',
     [members, id],
     (error, results) => {
       if (error) {

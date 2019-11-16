@@ -23,7 +23,7 @@ module.exports = function(app, passport) {
   app.delete("/users/:id", usersModel.deletePerson);
 
   app.get("/events", eventsModel.getEvents);
-  app.get("/event/:id", eventsModel.getEventById);
+  app.get("/events/:id", eventsModel.getEventById);
   app.post("/events", eventsModel.createEvent);
   app.put("/events/:id", eventsModel.addToEvent);
 

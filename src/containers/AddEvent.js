@@ -35,6 +35,7 @@ class EventBooking extends Component {
     }
     this.handleInputChange= this.handleInputChange.bind(this)
     this.handleSliderChange = this.handleSliderChange.bind(this)
+    this.addEvent = this.addEvent.bind(this)
     
   }
   
@@ -46,14 +47,14 @@ class EventBooking extends Component {
 
   addEvent(){
     // call to backend
-    let data = {
+    let data = JSON.stringify({
       title: this.state.title,
       description: this.state.description,
       location: this.state.location,
-      date: this.state.time,
+      date: this.state.time.toISOString(),
       members: "owner",
       required: this.state.total
-    }
+    });
     
     fetch(global.backendURL+'events',
       {  method: "POST",

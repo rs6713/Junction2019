@@ -22,6 +22,7 @@ class App extends Component {
 
     }
     global.backendURL = "http://localhost:8000/"
+    global.frontendURL = "http://localhost:3000/"
   }
   render() {
     let url = this.props;

@@ -30,6 +30,7 @@ class EventSignUp extends Component {
   componentDidMount(){
     
     var self = this;
+    console.log("Fetching event", this.props.match.params.id)
     fetch(global.backendURL+"events/"+this.props.match.params.id, {
       method: 'GET',
       headers: {
@@ -38,8 +39,9 @@ class EventSignUp extends Component {
     }).then(res => res.json())
       .then(data =>{
         if(data){
-          console.log("List of events: ", data)
-          self.setState({id: data.id});
+          console.log("Event: ", data)
+          console.log(data[0].members)
+          self.setState({id: data[0].id, members: data[0].members});
         }else{
           console.log("No data")
         }         
@@ -51,9 +53,13 @@ class EventSignUp extends Component {
 
   signUp(){
     // call to backend
-    let data = {
+    var self = this;
+    console.log(self.state.members)
+    let data = JSON.stringify( {
       members: this.state.members+","+this.state.name
-    }
+    })
+    console.log("Members: ", this.state.members)
+    console.log("Signing up ", this.state.name, " to ", this.props.match.params.id)
     
     fetch(global.backendURL+'events/'+this.props.match.params.id,
       {  method: "PUT",
@@ -94,7 +100,7 @@ class EventSignUp extends Component {
             <div>
               <TextField
                 id="outlined-basic"
-                label="Event Name"
+                label="Your Name"
                 margin="normal"
                 variant="outlined"
                 onChange={this.handleInputChange("name")}
@@ -106,7 +112,7 @@ class EventSignUp extends Component {
 
         
 
-        <Button variant="contained" color="secondary" onClick={this.addEvent} disabled={this.state.name.length==0}>
+        <Button variant="contained" color="secondary" onClick={this.signUp} disabled={this.state.name.length==0}>
           Sign Up
         </Button>
       </div>
