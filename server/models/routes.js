@@ -1,5 +1,6 @@
 const usersModel = require("./users");
-const twitterModel = require("./twitter")
+const twitterModel = require("./twitter");
+const trafficModel = require("./transport");
 
 //const { generateToken, sendToken } = require('./token.utils');
 //const withAuth = require('../lib/secureMiddleware')
@@ -11,7 +12,7 @@ module.exports = function(app, passport) {
   });
 
   app.get("/tweets", twitterModel.getTweets);
-  
+  app.get("/traffic", trafficModel.getRealtrafficTimes);
   
   
   //app.get('/users/:id', usersModel.getPersonById)
