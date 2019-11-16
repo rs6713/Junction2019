@@ -18,6 +18,7 @@ class App extends Component {
     this.state={
 
     }
+    global.backendURL = "http://localhost:8000/"
   }
   render() {
     return(
