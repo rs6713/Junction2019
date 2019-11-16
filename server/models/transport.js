@@ -58,10 +58,11 @@ const getRealtrafficTimes = (reqg, resg) => {
                     if (edges.hasOwnProperty(key)) {
 
                         try {
-                            const node = edges[key];
-
+                            const node = edges[key];                           
+                            
+                            if(node["place"]["stop"]) stop.name = node["place"]["stop"]["name"];
+                            
                             stop.distance = node.distance;
-                            stop.name = node["place"]["stop"]["name"];
                             stop.stoptimes = node["place"]["stoptimes"];
 
                         } catch (error) {
