@@ -205,6 +205,7 @@ class MapBox extends Component {
   }
 
   render(){
+    console.log(this.props)
     return(
       <div className ="mapbox-container">
         <div ref={el => this.mapContainer = el} className='mapbox' />

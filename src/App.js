@@ -6,6 +6,7 @@ import EventBooking from './containers/EventBooking';
 import Environment from './containers/Environment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMapMarkedAlt, faCalendarAlt, faLeaf } from '@fortawesome/free-solid-svg-icons'
+import Menu from './containers/Menu';
 
 import Travel from './containers/Travel';
 
@@ -21,27 +22,17 @@ class App extends Component {
     global.backendURL = "http://localhost:8000/"
   }
   render() {
+    let url = this.props;
+    console.log(url)
+    function styleLink(){
+      return {}
+    }
+
     return(
       <div class="App">
         <Router basename={process.env.PUBLIC_URL}>
         <div id="top">
-          <div id = "menu">
-            <Link to="mapbox">
-              <div>
-                <FontAwesomeIcon icon={faMapMarkedAlt}/>
-              </div>
-            </Link>
-            <Link to="/eventbooking">
-              <div>
-                <FontAwesomeIcon icon={faCalendarAlt} />
-              </div>
-            </Link>
-            <Link to="/environment">
-              <div>
-                <FontAwesomeIcon icon={faLeaf} />
-              </div>
-            </Link>
-          </div>
+          <Menu />
           <div id = "main">
             
               <Switch>
