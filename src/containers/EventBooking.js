@@ -9,30 +9,50 @@ import qrcode from 'qrcode' ;
 const BorderLinearProgress = withStyles({
   root: {
     height: 10,
-    backgroundColor: lighten('#ff6c5c', 0.5),
+    //backgroundColor: lighten('#ff6c5c', 0.5),
   },
   bar: {
     borderRadius: 20,
-    backgroundColor: '#ff6c5c',
+    //backgroundColor: '#ff6c5c',
   },
 })(LinearProgress);
-
 
 
 class EventBooking extends Component {
   constructor(props){
     super(props)
     this.state={
-      events:[]
+      events:[],
+      studentevents:[]
     }
     this.getEvents = this.getEvents.bind(this)
+    this.getStudentEvents = this.getStudentEvents.bind(this);
   }
   
 
   componentDidMount(){
     this.getEvents();
+    this.getStudentEvents();
   }
 
+  getStudentEvents(){
+    this.setState({
+      studentevents:[
+        {
+          organisation: "ESN Uni Helsinki",
+          title:"goes to Pirates of the Baltic Sea",
+          img: "https://i.ytimg.com/vi/fspSTg8Gumo/maxresdefault.jpg",
+          info: ["What? Pirates of the Baltic Sea"]
+        },
+        {
+          organisation: "ESN Uni Helsinki",
+          title:"Christmas Sauna Party",
+          img: "http://syote.fi/app/uploads/2016/11/JormaJ-msen-Ahmatupa-sauna_kaikkioikeudet-600x400.jpg",
+          info: ["What? Christmas Sauna Party"]
+        }
+      ]
+    })
+  }
 
   // total, number, description, title, location, id, 
   getEvents(){
@@ -46,7 +66,16 @@ class EventBooking extends Component {
         "id": 0,
         "total":9,
         "members":["Jack Simpson", "James Jimpson", "Henz Jager", "Leo Sebastian"]
-      }
+      },
+      {
+        "description:": "Yoga Tuesday",
+        "time": (new Date()),
+        "location": "Alvarinaukio",
+        "title": "Yoga in the Park",
+        "id": 1,
+        "total":null,
+        "members":["Jack Simpson", "James Jimpson", "Henz Jager", "Leo Sebastian"]
+        }
       ]
     }, function() {
       async function run(i) {
@@ -76,15 +105,36 @@ class EventBooking extends Component {
   render(){
     console.log("Rendering")
     return(
-      <div className ="eventbooking-container">
+      <div className ="events">
+        <div className = "studentevents">
+          {this.state.studentevents.map(se=>
+            <div>
+              <h3><span>{se.organisation}</span><br/>
+              <b>{se.title}</b></h3>
+              <div>
+                <div>
+                  <img src={se.img}/>
+                </div>
+                <div>
+                  {se.info.map(i=>
+                    <p>{i}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         
+        </div>
+        
+        <div className="eventbooking-container">
+        <h2>Activity Signup</h2>
         {
           this.state.events.map(event=>
             <div className="event" >
                 <div className="main">
                   <div>
                     <h3>{event.title}
-                      <span>{event.members.length}/{event.total}</span>
+                      <span>{event.members.length} {event.total? "/"+event.total: ""}</span>
                     </h3>
                     <p>{event.location}, <span>{event.time.toUTCString()}</span></p>
                     
@@ -94,13 +144,14 @@ class EventBooking extends Component {
                 <BorderLinearProgress
                   className="percentage-filled"
                   variant="determinate"
-                  color="secondary"
-                  value={(event.members.length/event.total)*100}
+                  color={event.total && event.total>event.members.length ? "secondary":"primary" }
+                  value={event.total?(event.members.length/event.total)*100: 100}
                 />
               </div>
 
           )
         }
+        </div>
       </div>
     )
   }
