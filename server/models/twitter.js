@@ -44,8 +44,7 @@ const getTweets = (request, response) => {
                         var tweet =
                         {
                             id: data.statuses[i].id_str,
-                            tweet: data.statuses[i].text,
-                            whole: data.statuses[i]
+                            tweet: data.statuses[i].text                            
                         };
 
                         if (data.statuses[i].user) { 
