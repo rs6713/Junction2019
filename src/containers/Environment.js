@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import '../App.scss';
+import Chart from '../components/chart';
+
 import { BrowserRouter as Router, Route, Link, Redirect, Switch } from "react-router-dom";
 
 
@@ -18,7 +20,12 @@ class Environment extends Component {
   render(){
     return(
       <div class ="environment-container">
-        <iframe width="100%" height="300" src="//jsfiddle.net/haseeb1431/tzjLuef8/embedded/result/dark/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
+        <div>
+          <Chart />
+        </div>
+        <div>
+        
+        </div>
       </div>
     )
   }
