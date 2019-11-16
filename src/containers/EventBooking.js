@@ -42,13 +42,13 @@ class EventBooking extends Component {
           organisation: "ESN Uni Helsinki",
           title:"goes to Pirates of the Baltic Sea",
           img: "https://i.ytimg.com/vi/fspSTg8Gumo/maxresdefault.jpg",
-          info: ["What? Pirates of the Baltic Sea"]
+          info: ["What? Pirates of the Baltic Sea", "Where? Stockholm, Sweden", "When? 17 Nov - 19 Nov", "How much? 23 euros", "Why? Best tru Finnish Party Travelling"]
         },
         {
           organisation: "ESN Uni Helsinki",
           title:"Christmas Sauna Party",
           img: "http://syote.fi/app/uploads/2016/11/JormaJ-msen-Ahmatupa-sauna_kaikkioikeudet-600x400.jpg",
-          info: ["What? Christmas Sauna Party"]
+          info: ["What? Christmas Sauna Party", "Where? Leppasuonkatu 11", "When? 1 Dec 11:00 - 15:30", "How much? 6 euros", "Why? Tons of fun awaits you"]
         }
       ]
     })

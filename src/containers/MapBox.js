@@ -2,11 +2,18 @@ import React, {Component} from 'react';
 import '../App.scss';
 import { BrowserRouter as Router, Route, Link, Redirect, Switch } from "react-router-dom";
 import mapboxgl from 'mapbox-gl';
+//import { Geocoder} from 'google-maps-react';
+import Geocode from "react-geocode";
+
 //var threebox = require('../threebox.js');
 //import '../threebox.js'
 //let threebox = require('../threebox.js');
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+
+Geocode.setApiKey("AIzaSyDuyvBjBgRb95E1rryBZjP8p41hqaA3FlA");
+Geocode.enableDebug();
+
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYnM2NzEzIiwiYSI6ImNrMzFhYjBocjA2ajQzZXA5b3JoOWUweXkifQ.md0uDRWHT3ZkBvgko_EcOg';
 
@@ -49,7 +56,7 @@ const accomPlaces =  {
     "coordinates": [accom.lng, accom.lat]
     }
   }))};
-  console.log(accomPlaces)
+  //console.log(accomPlaces)
  
 
 class MapBox extends Component {
@@ -61,8 +68,11 @@ class MapBox extends Component {
       lat: accommodations[0].lat,
       zoom:15,
       pitch: 60,
-      antialias: true
+      antialias: true,
+      events:[]
     }
+    this.getEvents = this.getEvents.bind(this);
+   
   }
 
   // Make data call
@@ -83,8 +93,93 @@ class MapBox extends Component {
 
   }
 
+// total, number, description, title, location, id, 
+getEvents(){
+  let self=this;
+  console.log("Fetching events")
+
+  fetch(global.backendURL+"events/", {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then(res => {
+    //console.log("What was returned: ", res)
+    return res.json()
+  
+  })
+    .then(data =>{
+      if(data){
+        console.log("List of events: ", data)
+        self.setState({events: data.map(d=>(
+          {
+            description: d.description,
+            title: d.title,
+            members: d.members.split(','),
+            location: d.location,
+            id: d.id,
+            total: d.required,
+            time: new Date(d.creationDate)
+          }
+        ))});
+
+        // 
+        for(let i=0; i< self.state.events.length;i++){
+          let u=i;
+
+          Geocode.fromAddress(self.state.events[u].location).then(
+            response => {
+              const { lat, lng } = response.results[0].geometry.location;
+              console.log("Got ", lat, lng, " for event ",self.state.events[u].location)
+              // Got lat and lng, can now place on map
+              self.setState({
+                events: [...self.state.events.slice(0,u),  {...self.state.events[u], lat:lat, lng:lng}  , ...self.state.events.slice(u+1)]
+              })
+            },
+            error => {
+              console.error(error);
+            }
+          );
+/*
+          Geocode.geocode( { 'address': self.state.events[u].location}, function(results, status) {
+            if (status == 'OK') {
+              console.log(results[0].geometry.location);
+
+            } else {
+              alert('Geocode was not successful for the following reason: ' + status);
+            }
+          });
+          */
+
+          
+/*
+          fetch(global.backendURL+"google/"+encodeURIComponent(self.state.events[u].location), {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(res => {
+            console.log("What was returned: ", res)
+            return res.json()
+          
+          }).then(data=>{
+            console.log("Got data:", data)
+          }).catch(err=>{
+            console.log("Errored: ", err)
+          })
+          */
+        }
+      }
+    });
+  }
+
+
+
+
   componentDidMount(){
     var self=this;
+    //this.geoCoder = new Geocoder();
+    
 
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(function(position) {
@@ -196,7 +291,131 @@ class MapBox extends Component {
       "type": "geojson",
       "data": accomPlaces
       });
-       
+
+
+
+
+
+      fetch(global.backendURL+"events/", {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(res => {
+        //console.log("What was returned: ", res)
+        return res.json()
+      
+      })
+        .then(data =>{
+          if(data){
+            console.log("List of events: ", data)
+            self.setState({events: data.map(d=>(
+              {
+                description: d.description,
+                title: d.title,
+                members: d.members.split(','),
+                location: d.location,
+                id: d.id,
+                total: d.required,
+                time: new Date(d.creationDate)
+              }
+            ))});
+    
+            // 
+            for(let i=0; i< self.state.events.length;i++){
+              let u=i;
+    
+              Geocode.fromAddress(self.state.events[u].location).then(
+                response => {
+                  const { lat, lng } = response.results[0].geometry.location;
+                  console.log("Got ", lat, lng, " for event ",self.state.events[u].location)
+                  // Got lat and lng, can now place on map
+                  
+                  map.addSource("events"+u, {
+                    "type": "geojson",
+                    "data": 
+                      
+                      
+                      {
+                        "type": "FeatureCollection",
+                        "features": [{
+                          "type": "Feature",
+                          "properties": {
+                          "place": self.state.events[u].title || "",
+                          "info": self.state.events[u].date || "",
+                          "icon": "theatre"
+                          },
+                          "geometry": {
+                          "type": "Point",
+                          "coordinates": [lng, lat]
+                          }
+                        }]}})
+
+
+
+                        map.addLayer({
+                          "id": "poievents"+u,
+                          "type": "symbol",
+                          "source": "events"+u,
+                          "layout": {
+                           // "text-field": ["get", "description"],
+                            //"text-variable-anchor": ["top", "bottom", "left", "right"],
+                            //"text-radial-offset": 0.5,
+                            //"text-justify": "auto",
+                            "icon-image": ["concat", ["get", "icon"], "-15"],
+                            "text-field": ['format',
+                              ['upcase', ['get', 'place']], { 'font-scale': .8, "text-color": 'black' },
+                              //'\n', {},
+                              ['downcase', ['get', 'info']], { 'font-scale': .6, "text-color": 'blue' }],
+                              "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                              "text-offset": [0, 0.6],
+                              "text-anchor": "top",
+                              
+                          }
+                        });
+                      
+                      
+                      
+                      },
+                      error => {
+                        console.error(error);
+                      });
+                    }       
+
+
+                  }
+                
+                });
+            
+  
+
+/*
+            map.addSource("events", {
+              "type": "geojson",
+              "data": self.state.events.filter(e=> e.lat).map(e=>
+                
+                
+                ({
+                  "type": "FeatureCollection",
+                  "features": accommodations.map(accom=>({
+                    "type": "Feature",
+                    "properties": {
+                    "place": e.title || "",
+                    "info": e.date || "",
+                    "icon": "theatre"
+                    },
+                    "geometry": {
+                    "type": "Point",
+                    "coordinates": [e.lng, e.lat]
+                    }
+                  }))})
+                
+                
+                )
+              });
+       */
+
+
       map.addLayer({
         "id": "poi-labels",
         "type": "symbol",
@@ -223,7 +442,7 @@ class MapBox extends Component {
   }
 
   render(){
-    console.log(this.props)
+    
     return(
       <div className ="mapbox-container">
         <div ref={el => this.mapContainer = el} className='mapbox' />
