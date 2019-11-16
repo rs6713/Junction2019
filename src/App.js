@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {Component} from 'react';
+import Map from './containers/Map';
+import Grid from './containers/Grid';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import './App.scss';
+import {BrowserRouter as Router, Route, Link, Switch} from "react-router-dom"
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state={
+
+    }
+  }
+  render() {
+    return(
+      <div class="App">
+        <Router basename={process.env.PUBLIC_URL}>
+          <Switch>
+            <Route path="/map" component={Map} />
+            <Route path="/grid" component={Grid} />
+          </Switch>
+        </Router>
+      </div>
+    )
+    
+  }
+
 }
+
 
 export default App;
