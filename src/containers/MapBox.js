@@ -320,16 +320,92 @@ getEvents(){
                 time: new Date(d.creationDate)
               }
             ))});
+
+            // array of requests
+            //
+            var arr = self.state.events.map(e=> Geocode.fromAddress(e.location).then(function(v){ return {v:v, status: "fulfilled" }},function(e){ return {e:e, status: "rejected" }})) ;
+            
+            console.log(arr);
+           
+          
+          
+
+            Promise.all(arr).then(function(results){
+              //[0].geometry.location .filter(x => x.status === "fulfilled")
+              let found = results.map((res, r)=>({r, ...res})).filter(x => x.status === "fulfilled")
+              console.log("Found ", found)
+              found = found.map(f=> ({ title: self.state.events[f.r].title,date: self.state.events[f.r].date, location:f.v.results[0].geometry.location  }))
+              console.log(found)
+
+              map.addSource("events", {
+                "type": "geojson",
+                "data": 
+                  {
+                    "type": "FeatureCollection",
+                    "features": found.map(f=>(
+                      {
+                      "type": "Feature",
+                      "properties": {
+                      "place": f.title || "",
+                      "info": f.date || "",
+                      "icon": "theatre"
+                      },
+                      "geometry": {
+                      "type": "Point",
+                      "coordinates": [f.location.lng, f.location.lat]
+                      }
+                    }))
+                  
+                  }
+                })
+
+                map.addLayer({
+                  "id": "poievents",
+                  "type": "symbol",
+                  "source": "events",
+                  "layout": {
+                   // "text-field": ["get", "description"],
+                    //"text-variable-anchor": ["top", "bottom", "left", "right"],
+                    //"text-radial-offset": 0.5,
+                    //"text-justify": "auto",
+                    "icon-image": ["concat", ["get", "icon"], "-15"],
+                    "text-field": ['format',
+                      ['upcase', ['get', 'place']], { 'font-scale': .8, "text-color": 'red' },
+                      //'\n', {},
+                      ['downcase', ['get', 'info']], { 'font-scale': .6, "text-color": 'black' }],
+                      "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                      "text-offset": [0, 0.6],
+                      "text-anchor": "top",
+                      
+                  }
+                });
+
+
+
+
+
+
+
+
+            });
+          }});
+
+
     
-            // 
+            /* 
             for(let i=0; i< self.state.events.length;i++){
               let u=i;
+
+
+              
     
               Geocode.fromAddress(self.state.events[u].location).then(
                 response => {
                   const { lat, lng } = response.results[0].geometry.location;
                   console.log("Got ", lat, lng, " for event ",self.state.events[u].location)
                   // Got lat and lng, can now place on map
+
+                
                   
                   map.addSource("events"+u, {
                     "type": "geojson",
@@ -385,7 +461,7 @@ getEvents(){
 
                   }
                 
-                });
+                });*/
             
   
 
