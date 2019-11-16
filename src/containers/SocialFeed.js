@@ -22,17 +22,9 @@ class SocialFeed extends Component {
       throw new Error('Request failed.');
     })
     .then(data => {
-
-        var users = [];
-        data.forEach(tweet => {
-            users.push({
-                name: tweet.id,
-                image: tweet.image,
-                tweet: tweet.text
-            });
+        this.setState({
+          users:data
         });
-
-        this.setState(users);
     })
     .catch(error => {
       console.log(error);
@@ -48,23 +40,24 @@ class SocialFeed extends Component {
       <div class ="studentads-container">
         SocialFeed
         <div >
-
-        <div className="main-body">
-        {[...this.state.users].map((user, index) => {
-          let name = `${user.name.first} ${user.name.last}`
+        {/* //var name = `${user.name.first} ${user.name.last}`
           let handle = `@${user.name.first}${user.name.last}`
           let image = user.image
           let tweet = user.tweet
-          console.log(image)
+          console.log(image) */}
+      <div className="main-body">
+      <div className="main-body">
+        {[...this.state.users].map((user, index) => {
           return(
             <TweetBody 
-              key={index}
-              name={name}
-              handle={handle}
-              tweet={tweet}
-              image={image} />
+              key={user.id}
+              name={user.name}
+              handle={user.handle}
+              tweet={user.tweet}
+              image={user.image} />
           )
         })}      
+      </div>
       </div>
         
         </div>        

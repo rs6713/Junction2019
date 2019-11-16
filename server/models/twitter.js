@@ -13,7 +13,7 @@ var tw = new Twitter(config.twitterConfig);
 // Set up your search parameters
 var params = {
     q: '#junction2019',
-    count: 3,
+    count: 10,
     result_type: 'recent',
     lang: 'en'
 }
@@ -34,17 +34,26 @@ const getTweets = (request, response) => {
 
             // Loop through the returned tweets
             for (let i = 0; i < data.statuses.length; i++) {
+                
 
                 try {
 
                     if (true) {
                     // TODO: Fix error: azureModeration(data.statuses[i].text)) {
-                        filteredTweets.push(
-                            {
-                                id: data.statuses[i].id_str,
-                                text: data.statuses[i].text
-                            }
-                        );
+                        
+                        var tweet =
+                        {
+                            id: data.statuses[i].id_str,
+                            tweet: data.statuses[i].text                            
+                        };
+
+                        if (data.statuses[i].user) { 
+                            tweet.name = data.statuses[i].user.name
+                            tweet.handle = data.statuses[i].user.screen_name
+                            tweet.image = data.statuses[i].user.profile_image_url                            
+                        }
+
+                        filteredTweets.push(tweet);
 
                     }
 
