@@ -3,6 +3,7 @@ import '../App.scss';
 import { BrowserRouter as Router, Route, Link, Redirect, Switch } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBiking, faTrain } from '@fortawesome/free-solid-svg-icons'
+import { request } from 'http';
 
 class Travel extends Component {
   constructor(props){
@@ -14,6 +15,20 @@ class Travel extends Component {
   }
 
   componentDidMount(){
+    var self=this;
+    
+
+    fetch(global.backendURL + "traffic", {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then(data =>{
+        self.setState(data);         
+      })
+      .catch(err => console.log(err))
 
   }
 
