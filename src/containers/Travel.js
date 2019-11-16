@@ -37,7 +37,7 @@ class Travel extends Component {
       <div className ="travel-container">
         <div className="bike">
           <span><FontAwesomeIcon icon={faBiking}/></span> 
-          <span><h3>{this.state.bike.occupancy} / {this.state.bike.total}</h3></span>
+          <span><h3><b>Otaranta</b> {this.state.bike.occupancy} / {this.state.bike.total}</h3></span>
         </div>
         {this.state.train.map(t=>
           <div className="train">
