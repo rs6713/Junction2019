@@ -1,6 +1,12 @@
 .App {
   text-align: center;
+  overflow:hidden;
+  height:100vh;
+  width:100%;
+  font-size:16px;
 }
+
+
 
 
 
@@ -17,6 +23,46 @@
 
 .App-link {
   color: #09d3ac;
+}
+
+#menu{
+  height: 100vh;
+  width:10%;
+  position:absolute;
+  left:0;
+  top:0;
+  display:inline-block;
+  background-color: #222222;
+  color:white;
+
+  a:visited { text-decoration: none; color:white; }
+  a:hover { text-decoration: none; color:white; }
+  a:focus { text-decoration: none; color:white; }
+  a:hover, a:active { text-decoration: none; color:white }
+
+  /*font-size: 2em;*/
+
+  div {
+    padding: 2em;
+    svg{
+      width:100%;
+      height:auto;
+    }
+  }
+
+  a {
+
+  }
+}
+
+#main{
+  width:90%;
+  height:100vh;
+  position:absolute;
+  left:10%;
+  top:0;
+  display:inline-block;
+  
 }
 
 // Container Imports

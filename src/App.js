@@ -2,6 +2,11 @@ import React, {Component} from 'react';
 import Map from './containers/Map';
 import MapBox from './containers/MapBox';
 import Grid from './containers/Grid';
+import EventBooking from './containers/EventBooking';
+import Environment from './containers/Environment';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMapMarkedAlt, faCalendarAlt, faLeaf } from '@fortawesome/free-solid-svg-icons'
+
 
 import './App.scss';
 import {BrowserRouter as Router, Route, Link, Switch} from "react-router-dom"
@@ -17,11 +22,32 @@ class App extends Component {
     return(
       <div class="App">
         <Router basename={process.env.PUBLIC_URL}>
-          <Switch>
-            <Route path="/map" component={Map} />
-            <Route path="/mapbox" component={MapBox} />
-            <Route path="/grid" component={Grid} />
-          </Switch>
+        <div id = "menu">
+          <Link to="mapbox">
+            <div>
+              <FontAwesomeIcon icon={faMapMarkedAlt}/>
+            </div>
+          </Link>
+          <Link to="/eventbooking">
+            <div>
+              <FontAwesomeIcon icon={faCalendarAlt} />
+            </div>
+          </Link>
+          <Link to="/environment">
+            <div>
+              <FontAwesomeIcon icon={faLeaf} />
+            </div>
+          </Link>
+        </div>
+        <div id = "main">
+          
+            <Switch>
+              <Route path="/mapbox" component={MapBox} />
+              <Route path="/eventbooking" component={EventBooking} />
+              <Route path="/environment" component={Environment} />
+            </Switch>
+          
+        </div>
         </Router>
       </div>
     )
@@ -30,5 +56,5 @@ class App extends Component {
 
 }
 
-
+//<!--<Route path="/map" component={Map} />-->
 export default App;
