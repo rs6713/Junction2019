@@ -1,4 +1,4 @@
-const { pool } = require("../config/dbConfig");
+const { pool } = require("../config/config");
 
 const getPersons = (request, response) => {
   pool.query(
