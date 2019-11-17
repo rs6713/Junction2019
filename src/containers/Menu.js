@@ -3,17 +3,22 @@ import '../App.scss';
 import { BrowserRouter as Router, Route, Link, Redirect, Switch, withRouter } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMapMarkedAlt, faCalendarAlt, faLeaf } from '@fortawesome/free-solid-svg-icons'
-
+import qrcode from 'qrcode' ;
 class Menu extends Component {
   constructor(props){
     super(props);
     this.state={
-
+      qr:null
     }
   }
 
   componentDidMount(){
-
+    var self = this;
+    async function hi(){
+      const res = await qrcode.toDataURL(global.frontendURL + 'addevent/');
+      self.setState({qr:res})
+    }
+    hi();
   }
 
   render(){
@@ -40,6 +45,12 @@ class Menu extends Component {
             <FontAwesomeIcon icon={faLeaf} />
           </div>
         </Link>
+        {this.state.qr &&
+        <div id="add">
+          <h5>Add your own event</h5>
+          <img src={this.state.qr} />
+        </div>
+        }
       </div>
     )
   }

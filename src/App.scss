@@ -49,6 +49,14 @@
   display:inline-block;
   background-color: #222222;
   color:white;
+  #add{
+    position:absolute;
+    bottom:10%;
+    padding:1em;
+  }
+  img{
+    max-width:100%;
+  }
 
   a:visited { text-decoration: none; color:white; }
   a:hover { text-decoration: none; color:white; }
