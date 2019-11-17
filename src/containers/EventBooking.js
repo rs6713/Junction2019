@@ -6,6 +6,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import qrcode from 'qrcode' ;
 
+
+
 const BorderLinearProgress = withStyles({
   root: {
     height: 10,
@@ -206,6 +208,7 @@ class EventBooking extends Component {
         
         <div className="eventbooking-container">
         <h2>Activity Signup</h2>
+        {this.state.events.length==0 &&  <CircularProgress />}
         {
           this.state.events.map(event=>
             <div className="event" >
