@@ -395,9 +395,9 @@ getEvents(){
 
 
                 // Add thin lines
-                for(let i=0; i<found.length;i++){
+                for(let i=0; i<found.filter(f=> (new Date(f.date)) > (new Date())).length;i++){
                   console.log([self.state.lat, self.state.lng],
-                    [found[i].location.lat, found[i].location.lng])
+                    [found.filter(f=> (new Date(f.date)) > (new Date()))[i].location.lat, found.filter(f=> (new Date(f.date)) > (new Date()))[i].location.lng])
                   self.map.addLayer({
                     "id": "route"+i,
                     "type": "line",
@@ -410,7 +410,7 @@ getEvents(){
                     "type": "LineString",
                     "coordinates": [
                       [self.state.lng, self.state.lat],
-                    [found[i].location.lng, found[i].location.lat]
+                    [found.filter(f=> (new Date(f.date)) > (new Date()))[i].location.lng, found.filter(f=> (new Date(f.date)) > (new Date()))[i].location.lat]
                     
                     ]
                     }
