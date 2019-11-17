@@ -645,6 +645,12 @@ getEvents(){
 
         if(!accommodations[i].icon){
           let r=Math.random()
+          let b=Math.random()
+          let g = Math.random()
+          let latoffset =0;
+          let lngoffset =0.0002;
+          let height = 0.0004;
+          
           self.map.addLayer({
             'id': 'health'+i,
             'type': 'fill',
@@ -654,10 +660,10 @@ getEvents(){
             'type': 'Feature',
             'geometry': {
             'type': 'Polygon',
-            'coordinates': [[[accommodations[i].lng, accommodations[i].lat],
-            [accommodations[i].lng+0.0003, accommodations[i].lat],
-            [accommodations[i].lng+0.0003, accommodations[i].lat+0.0005*r],
-            [accommodations[i].lng, accommodations[i].lat+0.0005*r]]]
+            'coordinates': [[[accommodations[i].lng + lngoffset, accommodations[i].lat+latoffset],
+            [accommodations[i].lng+0.0003+ lngoffset, accommodations[i].lat+latoffset],
+            [accommodations[i].lng+0.0003+ lngoffset, accommodations[i].lat+height*r+latoffset],
+            [accommodations[i].lng+ lngoffset, accommodations[i].lat+height*r+latoffset]]]
             }
             }
             },
@@ -667,6 +673,57 @@ getEvents(){
             'fill-opacity': 0.8
             }
             });
+
+            self.map.addLayer({
+              'id': 'BLACK'+i,
+              'type': 'fill',
+              'source': {
+              'type': 'geojson',
+              'data': {
+              'type': 'Feature',
+              'geometry': {
+              'type': 'Polygon',
+              'coordinates': [[[accommodations[i].lng + lngoffset, accommodations[i].lat+latoffset+height*r],
+              [accommodations[i].lng+0.0003+ lngoffset, accommodations[i].lat+latoffset+height*r],
+              [accommodations[i].lng+0.0003+ lngoffset, accommodations[i].lat+height*r+latoffset+height*b],
+              [accommodations[i].lng+ lngoffset, accommodations[i].lat+height*r+latoffset +height*b]]]
+              }
+              }
+              },
+              'layout': {},
+              'paint': {
+              'fill-color': '#F00',
+              'fill-opacity': 0.8
+              }
+              });
+
+              self.map.addLayer({
+                'id': 'BLUE'+i,
+                'type': 'fill',
+                'source': {
+                'type': 'geojson',
+                'data': {
+                'type': 'Feature',
+                'geometry': {
+                'type': 'Polygon',
+                'coordinates': [[[accommodations[i].lng + lngoffset, accommodations[i].lat+latoffset+height*r+height*b],
+                [accommodations[i].lng+0.0003+ lngoffset, accommodations[i].lat+latoffset+height*r+height*b],
+                [accommodations[i].lng+0.0003+ lngoffset, accommodations[i].lat+height*r+latoffset+height*b+height*g],
+                [accommodations[i].lng+ lngoffset, accommodations[i].lat+height*r+latoffset +height*b+height*g]]]
+                }
+                }
+                },
+                'layout': {},
+                'paint': {
+                'fill-color': '#00F',
+                'fill-opacity': 0.8
+                }
+                });
+
+
+
+
+
           }
         }
 
