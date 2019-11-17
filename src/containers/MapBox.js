@@ -641,6 +641,38 @@ getEvents(){
         }
       });
 
+      for(let i=0; i< accommodations.length;i++){
+
+        if(!accommodations[i].icon){
+          let r=Math.random()
+          self.map.addLayer({
+            'id': 'health'+i,
+            'type': 'fill',
+            'source': {
+            'type': 'geojson',
+            'data': {
+            'type': 'Feature',
+            'geometry': {
+            'type': 'Polygon',
+            'coordinates': [[[accommodations[i].lng, accommodations[i].lat],
+            [accommodations[i].lng+0.0003, accommodations[i].lat],
+            [accommodations[i].lng+0.0003, accommodations[i].lat+0.0005*r],
+            [accommodations[i].lng, accommodations[i].lat+0.0005*r]]]
+            }
+            }
+            },
+            'layout': {},
+            'paint': {
+            'fill-color': '#0F0',
+            'fill-opacity': 0.8
+            }
+            });
+          }
+        }
+
+
+
+
 
       var layers = self.map.getStyle().layers;
  
