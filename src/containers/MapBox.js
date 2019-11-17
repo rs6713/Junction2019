@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Link, Redirect, Switch } from "react-ro
 import mapboxgl from 'mapbox-gl';
 //import { Geocoder} from 'google-maps-react';
 import Geocode from "react-geocode";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 //var threebox = require('../threebox.js');
 //import '../threebox.js'
@@ -69,7 +70,8 @@ class MapBox extends Component {
       zoom:15,
       pitch: 60,
       antialias: true,
-      events:[]
+      events:[],
+      loading:true
     }
     this.getEvents = this.getEvents.bind(this);
    
@@ -339,8 +341,32 @@ getEvents(){
               //[0].geometry.location .filter(x => x.status === "fulfilled")
               let found = results.map((res, r)=>({r, ...res})).filter(x => x.status === "fulfilled")
               console.log("Found ", found)
-              found = found.map(f=> ({ title: self.state.events[f.r].title,date: self.state.events[f.r].date, location:f.v.results[0].geometry.location  }))
+              found = found.map(f=> ({ title: self.state.events[f.r].title,date: (new Date(self.state.events[f.r].time)).toUTCString() , location:f.v.results[0].geometry.location  }))
               console.log(found)
+              console.log( found.filter(f=> f.date > (new Date())))
+              
+
+              self.map.addSource("currentevents", {
+                "type": "geojson",
+                "data": 
+                  {
+                    "type": "FeatureCollection",
+                    "features": found.filter(f=> (new Date(f.date)) > (new Date())).map(f=>(
+                      {
+                      "type": "Feature",
+                      "properties": {
+                      "place": f.title || "",
+                      "info": f.date || "",
+                      "icon": "theatre"
+                      },
+                      "geometry": {
+                      "type": "Point",
+                      "coordinates": [f.location.lng, f.location.lat]
+                      }
+                    }))
+                  
+                  }
+                })
 
               self.map.addSource("events", {
                 "type": "geojson",
@@ -367,7 +393,7 @@ getEvents(){
                 self.map.addLayer({
                   "id": "poievents",
                   "type": "symbol",
-                  "source": "events",
+                  "source": "currentevents",
                   "layout": {
                    // "text-field": ["get", "description"],
                     //"text-variable-anchor": ["top", "bottom", "left", "right"],
@@ -376,7 +402,7 @@ getEvents(){
                     "icon-image": ["concat", ["get", "icon"], "-15"],
                     "text-field": ['format',
                       ['upcase', ['get', 'place']], { 'font-scale': .8, "text-color": 'red' },
-                      //'\n', {},
+                      '\n', {},
                       ['downcase', ['get', 'info']], { 'font-scale': .6, "text-color": 'black' }],
                       "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
                       "text-offset": [0, 0.6],
@@ -385,6 +411,9 @@ getEvents(){
                   }
                 });
 
+                self.setState({
+                  loading:false
+                })
 
 
 
@@ -651,6 +680,7 @@ getEvents(){
    
     return(
       <div className ="mapbox-container">
+        {this.state.loading &&  <CircularProgress className="circular"/>}
         <div ref={el => this.mapContainer = el} className='mapbox' />
 
         
