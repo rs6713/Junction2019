@@ -20,7 +20,7 @@ const createEvent = (request, response) => {
 const getEvents = (request, response) => {
   console.log("Asked to get events\n")
   pool.query(
-    'SELECT * FROM public."events"',
+    'SELECT * FROM public."events" ORDER BY "creationDate" ASC',
     (error, results) => {
       if (error) {
         console.log("Errored: ", error)

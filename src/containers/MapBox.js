@@ -77,6 +77,7 @@ class MapBox extends Component {
 
   // Make data call
   componentWillMount(){
+    var self = this;
     /*
     fetch('/traffic:8000').then(function(res){
       console.log("Response:", res.body)
@@ -90,6 +91,22 @@ class MapBox extends Component {
       
     })
     */
+
+   if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      let minDistance = 9999999999;
+      for(let i=0; i< accommodations.length; i++){
+        console.log(i)
+        if( (Math.abs(position.coords.latitude-accommodations[i].lat) + Math.abs(position.coords.longitude-accommodations[i].lng))<minDistance && accommodations[i].icon!=="college" ){
+          self.setState({currentAccomodation:i, lng: accommodations[i].lng, lat:accommodations[i].lat })
+          console.log(accommodations[i].icon)
+        }
+      }
+     // position.coords.latitude, position.coords.longitude;
+    });
+  } else {
+    /* geolocation IS NOT available */
+  }
 
   }
 
@@ -181,21 +198,9 @@ getEvents(){
     //this.geoCoder = new Geocoder();
     
 
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        let minDistance = 9999999999;
-        for(let i=0; i< accommodations.length; i++){
-          if( (Math.abs(position.coords.latitude-accommodations[i].lat) + Math.abs(position.coords.longitude-accommodations[i].lng))<minDistance ){
-            self.setState({currentAccomodation:i, lng: accommodations[i].lng, lat:accommodations[i].lat })
-          }
-        }
-       // position.coords.latitude, position.coords.longitude;
-      });
-    } else {
-      /* geolocation IS NOT available */
-    }
+
     
-    const map = new mapboxgl.Map({
+    self.map = new mapboxgl.Map({
       container: this.mapContainer, // id
       style: 'mapbox://styles/mapbox/light-v10',
       center: [this.state.lng, this.state.lat],
@@ -285,9 +290,9 @@ getEvents(){
     
 
 
-    map.on('load', function() {
+    self.map.on('load', function() {
       // Add a GeoJSON source containing place coordinates and information.
-      map.addSource("places", {
+      self.map.addSource("places", {
       "type": "geojson",
       "data": accomPlaces
       });
@@ -337,7 +342,7 @@ getEvents(){
               found = found.map(f=> ({ title: self.state.events[f.r].title,date: self.state.events[f.r].date, location:f.v.results[0].geometry.location  }))
               console.log(found)
 
-              map.addSource("events", {
+              self.map.addSource("events", {
                 "type": "geojson",
                 "data": 
                   {
@@ -359,7 +364,7 @@ getEvents(){
                   }
                 })
 
-                map.addLayer({
+                self.map.addLayer({
                   "id": "poievents",
                   "type": "symbol",
                   "source": "events",
@@ -384,7 +389,7 @@ getEvents(){
 
 
                 // Add heatmap layer
-                map.addLayer({
+                self.map.addLayer({
                   "id": "earthquakes-heat",
                   "type": "heatmap",
                   "source": "events",
@@ -545,7 +550,7 @@ getEvents(){
        */
 
 
-      map.addLayer({
+      self.map.addLayer({
         "id": "poi-labels",
         "type": "symbol",
         "source": "places",
@@ -565,13 +570,85 @@ getEvents(){
             
         }
       });
-       
 
+
+      var layers = self.map.getStyle().layers;
+ 
+      var labelLayerId;
+      for (var i = 0; i < layers.length; i++) {
+      if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
+      labelLayerId = layers[i].id;
+      break;
+      }
+      }
+       
+      self.map.addLayer({
+      'id': '3d-buildings',
+      'source': 'composite',
+      'source-layer': 'building',
+      'filter': ['==', 'extrude', 'true'],
+      'type': 'fill-extrusion',
+      'minzoom': 15,
+      'paint': {
+      'fill-extrusion-color': '#aaa',
+       
+      // use an 'interpolate' expression to add a smooth transition effect to the
+      // buildings as the user zooms in
+      'fill-extrusion-height': [
+      "interpolate", ["linear"], ["zoom"],
+      15, 0,
+      15.05, ["get", "height"]
+      ],
+      'fill-extrusion-base': [
+      "interpolate", ["linear"], ["zoom"],
+      15, 0,
+      15.05, ["get", "min_height"]
+      ],
+      'fill-extrusion-opacity': .6
+      }
+      }, labelLayerId);
+
+
+
+      self.map.addLayer({
+        "id": "route",
+        "type": "line",
+        "source": {
+        "type": "geojson",
+        "data": {
+        "type": "Feature",
+        "properties": {},
+        "geometry": {
+        "type": "LineString",
+        "coordinates": [
+        [-122.48369693756104, 37.83381888486939],
+        [-122.48369693756104, 37.83381888486939]
+        
+        ]
+        }
+        }
+        },
+        "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+        },
+        "paint": {
+        "line-color": "#888",
+        "line-width": 8
+        }
+        });
+
+
+       
+        self.map.flyTo({center: {lat: self.state.lat, lng:self.state.lng}});
     });
+   
+    
   }
 
   render(){
-    
+
+   
     return(
       <div className ="mapbox-container">
         <div ref={el => this.mapContainer = el} className='mapbox' />
