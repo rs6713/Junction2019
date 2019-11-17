@@ -344,6 +344,9 @@ getEvents(){
               found = found.map(f=> ({ title: self.state.events[f.r].title,date: (new Date(self.state.events[f.r].time)).toUTCString() , location:f.v.results[0].geometry.location  }))
               console.log(found)
               console.log( found.filter(f=> f.date > (new Date())))
+              self.setState({
+                found: found.filter(f=> (new Date(f.date)) > (new Date()))
+              })
               
 
               self.map.addSource("currentevents", {
@@ -389,6 +392,44 @@ getEvents(){
                   
                   }
                 })
+
+
+                // Add thin lines
+                for(let i=0; i<found.length;i++){
+                  console.log([self.state.lat, self.state.lng],
+                    [found[i].location.lat, found[i].location.lng])
+                  self.map.addLayer({
+                    "id": "route"+i,
+                    "type": "line",
+                    "source": {
+                    "type": "geojson",
+                    "data": {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                    "type": "LineString",
+                    "coordinates": [
+                      [self.state.lng, self.state.lat],
+                    [found[i].location.lng, found[i].location.lat]
+                    
+                    ]
+                    }
+                    }
+                    },
+                    "layout": {
+                    "line-join": "round",
+                    "line-cap": "round"
+                    },
+                    "paint": {
+                    "line-color": "#FF0000",
+                    "line-width": 1,
+                    "line-gap-width":2,
+                    "line-opacity": 0.2
+                    }
+                    });
+                }
+                
+
 
                 self.map.addLayer({
                   "id": "poievents",
@@ -639,33 +680,7 @@ getEvents(){
 
 
 
-      self.map.addLayer({
-        "id": "route",
-        "type": "line",
-        "source": {
-        "type": "geojson",
-        "data": {
-        "type": "Feature",
-        "properties": {},
-        "geometry": {
-        "type": "LineString",
-        "coordinates": [
-        [-122.48369693756104, 37.83381888486939],
-        [-122.48369693756104, 37.83381888486939]
-        
-        ]
-        }
-        }
-        },
-        "layout": {
-        "line-join": "round",
-        "line-cap": "round"
-        },
-        "paint": {
-        "line-color": "#888",
-        "line-width": 8
-        }
-        });
+
 
 
        
