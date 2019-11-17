@@ -74,7 +74,7 @@ class EventBooking extends Component {
       .then(data =>{
         if(data){
           console.log("List of events: ", data)
-          self.setState({events: data.map(d=>(
+          self.setState({events: data.filter(f=> (new Date(f.creationDate)) > (new Date())).map(d=>(
             {
               description: d.description,
               title: d.title,
